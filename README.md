@@ -1,45 +1,44 @@
 # AI Task App – Backend
 
-AI Task App to aplikacja webowa wspierana przez sztuczną inteligencję (GPT), służąca do zarządzania zadaniami technicznymi, zapisywania wiedzy i przeszukiwania historii problemów.
+Ten folder zawiera backend aplikacji AI Task App – osobistego asystenta AI do zarządzania zadaniami.  
+Zbudowany w oparciu o Express (Node.js) i MongoDB.
 
-Ten folder zawiera kod backendu aplikacji – oparty na Node.js, Express i MongoDB.
+## 📦 Technologie
 
-## 🔧 Technologie
-
-- Node.js
-- Express
+- Node.js + Express
 - MongoDB + Mongoose
-- JWT + bcrypt
-- dotenv + modularna struktura kodu
-- CORS
+- JWT (autoryzacja)
+- bcrypt (hashowanie haseł)
+- dotenv (zmienne środowiskowe)
+- modularna architektura kodu
 
-## 📂 Struktura folderów
+## 📁 Struktura katalogów
 
 ```
 backend/
-├── config/           # Połączenie z MongoDB
-├── controllers/      # Logika biznesowa
-├── models/           # Schematy danych Mongoose
-├── routes/           # Endpointy API
-├── utils/            # Narzędzia pomocnicze (np. response handler)
-├── .env              # Zmienne środowiskowe (nie commitować)
-├── .gitignore
-└── server.js         # Główna aplikacja Express
+├── config/
+├── controllers/
+├── models/
+├── routes/
+├── utils/
+├── server.js
+├── .env.example
+└── .gitignore
 ```
 
-## 🚀 Jak uruchomić backend lokalnie
+## 🚀 Uruchomienie backendu
 
-1. Zainstaluj zależności:
+1. Skonfiguruj plik `.env` na podstawie `.env.example`:
+
+```
+PORT=5000
+MONGO_URI=mongodb://localhost:27017/ai-task-app
+```
+
+2. Zainstaluj zależności:
 
 ```bash
 npm install
-```
-
-2. Utwórz plik `.env` na podstawie `.env.example`:
-
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/ai-task-app
 ```
 
 3. Uruchom serwer:
@@ -48,22 +47,16 @@ MONGO_URI=mongodb://localhost:27017/ai-task-app
 node server.js
 ```
 
-Serwer będzie nasłuchiwał na porcie `5000`. Możesz sprawdzić jego działanie pod adresem: `http://localhost:5000/`
-
-## ✅ Endpointy
+## 🔐 Endpointy (aktualne i planowane)
 
 - `POST /api/auth/register` – rejestracja użytkownika
-- (Wkrótce) `POST /api/auth/login` – logowanie z JWT
-- (Wkrótce) `POST /api/tasks` – tworzenie zadania
-- (Wkrótce) `GET /api/tasks` – pobieranie zadań
-
-## 🧠 Cele systemu
-
-- Wspomaganie zapamiętywania i organizacji rozwiązań technicznych
-- Przechowywanie wiedzy eksperckiej
-- Integracja z GPT do opisu, podsumowania i przeszukiwania zadań
+- `POST /api/auth/login` – (planowane)
+- `POST /api/tasks` – (planowane)
+- `GET /api/health` – (planowane)
+- `POST /api/ai/similar-tasks` – (planowane)
 
 ## 📄 Dokumentacja
 
-Pełna dokumentacja znajduje się w pliku:  
-`../docs/AI_Task_App_backend_dokumentacja_szczegolowa.docx`
+- [`docs/backend_overview.md`](../docs/backend_overview.md)
+- [`docs/api_spec.md`](../docs/api_spec.md)
+- [`docs/project_overview.md`](../docs/project_overview.md)
