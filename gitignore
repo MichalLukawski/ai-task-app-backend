@@ -1,0 +1,17 @@
+
+# Node modules
+node_modules/
+
+# Środowiskowe pliki konfiguracyjne
+.env
+
+# Logi
+logs
+*.log
+
+# Dane tymczasowe
+*.tmp
+
+# Systemowe
+.DS_Store
+Thumbs.db
