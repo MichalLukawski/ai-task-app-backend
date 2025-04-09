@@ -1,7 +1,7 @@
 {
   "name": "ai-task-app-backend",
-  "version": "0.0.3",
-  "description": "Backend API for AI Task App \u2013 task assistant with GPT integration",
+  "version": "0.0.4",
+  "description": "Backend API for AI Task App \u2013 task assistant with GPT integration \u2013 version 0.0.4 includes task system, JWT middleware, response handler",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

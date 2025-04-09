@@ -1,65 +1,80 @@
 # AI Task App – Backend
 
-Ten folder zawiera backend aplikacji AI Task App – osobistego asystenta AI do zarządzania zadaniami.  
-Zbudowany w oparciu o Express (Node.js) i MongoDB.
+Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzialny za rejestrację użytkowników, zarządzanie zadaniami oraz integrację z AI (planowana).
 
-## 📦 Technologie
+## 🧰 Technologie
 
 - Node.js + Express
 - MongoDB + Mongoose
 - JWT (autoryzacja)
-- bcrypt (hashowanie haseł)
-- dotenv (zmienne środowiskowe)
-- modularna architektura kodu
+- Bcrypt (hashowanie haseł)
+- Dotenv (zmienne środowiskowe)
+- CORS
+- Moduły pomocnicze (`utils/`, `middleware/`)
+
+---
 
 ## 📁 Struktura katalogów
 
 ```
 backend/
-├── config/
-├── controllers/
-├── models/
-├── routes/
-├── utils/
-├── server.js
-├── .env.example
-└── .gitignore
+├── config/            # Konfiguracja MongoDB
+├── controllers/       # Logika auth + tasks
+├── models/            # Schematy: User, Task
+├── routes/            # Ścieżki API
+├── middleware/        # JWT auth, (planowana walidacja)
+├── utils/             # sendSuccess/sendError
+├── .env               # Zmienne środowiskowe
+└── server.js          # Główna aplikacja Express
 ```
+
+---
 
 ## 🚀 Uruchomienie backendu
 
-1. Skonfiguruj plik `.env` na podstawie `.env.example`:
-
+1. Skonfiguruj plik `.env`:
 ```
-PORT=5000
 MONGO_URI=mongodb://localhost:27017/ai-task-app
+JWT_SECRET=twoj_super_sekret
+PORT=5000
 ```
 
 2. Zainstaluj zależności:
-
 ```bash
 npm install
 ```
 
 3. Uruchom serwer:
-
 ```bash
 node server.js
+# lub z nodemon:
+npx nodemon server.js
 ```
 
-## 🔐 Endpointy (aktualne i planowane)
+---
 
-- `POST /api/auth/register` – rejestracja użytkownika
-- `POST /api/auth/login` – (planowane)
-- `POST /api/tasks` – (planowane)
-- `GET /api/health` – (planowane)
-- `POST /api/ai/similar-tasks` – (planowane)
+## 🔐 Uwierzytelnianie
+
+- JWT generowane podczas logowania (`/api/auth/login`)
+- Token przesyłany w nagłówku: `Authorization: Bearer <TOKEN>`
+- Middleware `auth.js` chroni trasy `/api/tasks`
+
+---
+
+## 🧠 Integracja AI (planowana)
+
+- GPT-4 generuje tytuł/opis zadania
+- Tworzenie podsumowań przy zamykaniu
+- Semantyczne porównania (`/api/ai/similar-tasks`)
+
+---
 
 ## 📄 Dokumentacja
 
-- [project_overview.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/project_overview.md)
-- [backend_overview.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/backend_overview.md)
-- [frontend_overview.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/frontend_overview.md)
-- [api_spec.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/api_spec.md)
-- [ai_integration.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/ai_integration.md)
-- [project_roadmap.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/project_roadmap.md)
+- `project_overview.md`
+- `backend_overview.md`
+- `api_spec.md`
+- `project_roadmap.md`
+- `controllers.md`
+- `middleware.md`
+- `utils.md`

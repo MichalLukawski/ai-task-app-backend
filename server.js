@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const cors = require ('cors');
 
 const connectDB = require('./config/db');
+const taskRoutes = require('./routes/taskRoutes');
+
 
 // Wczytaj zmienne środowiskowe z pliku .env
 dotenv.config();
@@ -15,6 +17,9 @@ const app = express();
 app.use(cors());
 //umożliwia obsługę JSON-a w requestach (req.body)
 app.use(express.json());
+
+app.use('/api/tasks', taskRoutes);
+
 
 
 //prosty test, czy serwer działa – można otworzyć w przeglądarce lub curl/postmanem
