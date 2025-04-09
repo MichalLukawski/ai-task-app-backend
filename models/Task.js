@@ -20,6 +20,10 @@ const TaskSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    dueDate: {
+        type: Date,
+        default: null
+      },
     status: {
         type: String,
         enum: ['open', 'closed'],

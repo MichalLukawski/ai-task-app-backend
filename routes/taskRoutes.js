@@ -4,11 +4,13 @@ const express = require('express');
 const router = express.Router();
 const taskController = require('../controllers/taskController');
 const authMiddleware = require('../middleware/auth');
+const validate = require('../middleware/validate');
+const { validateTaskInput } = require('../validators/taskValidator')
 
-//Wszystkie trasy wymagają zalofowanie (middleware auth)
-router.post('/', authMiddleware, taskController.createTask);
+//Wszystkie trasy wymagają zalogowania (middleware auth)
+router.post('/', authMiddleware, validateTaskInput, validate, taskController.createTask);
 router.get('/', authMiddleware, taskController.getTasks);
-router.put('/:id', authMiddleware, taskController.updateTask);
+router.put('/:id', authMiddleware, validateTaskInput, validate, taskController.updateTask);
 router.post('/:id/close', authMiddleware, taskController.closeTask);
 
 module.exports = router;

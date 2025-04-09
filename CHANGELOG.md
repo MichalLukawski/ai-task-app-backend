@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.0.5] – 2025-04-10
+
+### Dodano
+- Pole `dueDate` (termin wykonania) do modelu `Task.js`
+- Walidację pola `dueDate` jako daty ISO (`isISO8601`) w `taskValidator.js`
+- Middleware `validate.js` do obsługi błędów walidacji
+- Nową dokumentację: `validators.md`, `validators_UPDATED.md`
+- Rozszerzenia dokumentów: `db_schema.md`, `api_spec.md`, `routes.md`, `project_overview.md`, `project_roadmap.md`
+
+### Zmieniono
+- Walidator `validateTaskInput` obsługuje teraz także `dueDate`
+- Trasy `POST` i `PUT /api/tasks` obsługują dodatkowe pole `dueDate`
+- Zaktualizowano `README.md` backendu o informacje o walidacji i dueDate
+- Podniesiono wersję `package.json` do `0.0.5`
+
+
+# Changelog
+
 ## [0.0.4] – 2025-04-09
 
 ### Added

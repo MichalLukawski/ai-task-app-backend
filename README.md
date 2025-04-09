@@ -10,7 +10,8 @@ Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzial
 - Bcrypt (hashowanie haseł)
 - Dotenv (zmienne środowiskowe)
 - CORS
-- Moduły pomocnicze (`utils/`, `middleware/`)
+- Express-validator (walidacja danych wejściowych)
+- Moduły pomocnicze (`utils/`, `middleware/`, `validators/`)
 
 ---
 
@@ -22,7 +23,8 @@ backend/
 ├── controllers/       # Logika auth + tasks
 ├── models/            # Schematy: User, Task
 ├── routes/            # Ścieżki API
-├── middleware/        # JWT auth, (planowana walidacja)
+├── middleware/        # JWT auth, walidacja danych
+├── validators/        # Walidatory pól (express-validator)
 ├── utils/             # sendSuccess/sendError
 ├── .env               # Zmienne środowiskowe
 └── server.js          # Główna aplikacja Express
@@ -61,6 +63,15 @@ npx nodemon server.js
 
 ---
 
+## 🗂️ Zadania
+
+- Endpointy `POST`, `GET`, `PUT`, `POST /close` dla `/api/tasks`
+- Obsługa pola `dueDate` (termin wykonania, opcjonalny)
+- Walidacja pól zadań (`description`, `title`, `status`, `dueDate`)
+- Middleware `validate.js` + `taskValidator.js`
+
+---
+
 ## 🧠 Integracja AI (planowana)
 
 - GPT-4 generuje tytuł/opis zadania
@@ -78,3 +89,4 @@ npx nodemon server.js
 - `controllers.md`
 - `middleware.md`
 - `utils.md`
+- `validators.md`

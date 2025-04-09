@@ -17,7 +17,6 @@ const app = express();
 app.use(cors());
 //umożliwia obsługę JSON-a w requestach (req.body)
 app.use(express.json());
-
 app.use('/api/tasks', taskRoutes);
 
 

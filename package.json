@@ -1,7 +1,7 @@
 {
   "name": "ai-task-app-backend",
-  "version": "0.0.4",
-  "description": "Backend API for AI Task App \u2013 task assistant with GPT integration \u2013 version 0.0.4 includes task system, JWT middleware, response handler",
+  "version": "0.0.5",
+  "description": "Backend API for AI Task App \u2013 task assistant with GPT integration \u2013 version 0.0.5 includes optional dueDate field in Task model, ISO 8601 date validation, extended input validation using express-validator, and updated documentation files.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2"
   }
