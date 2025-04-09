@@ -57,6 +57,9 @@ node server.js
 
 ## 📄 Dokumentacja
 
-- [`docs/backend_overview.md`](../docs/backend_overview.md)
-- [`docs/api_spec.md`](../docs/api_spec.md)
-- [`docs/project_overview.md`](../docs/project_overview.md)
+- [project_overview.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/project_overview.md)
+- [backend_overview.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/backend_overview.md)
+- [frontend_overview.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/frontend_overview.md)
+- [api_spec.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/api_spec.md)
+- [ai_integration.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/ai_integration.md)
+- [project_roadmap.md](https://github.com/MichalLukawski/ai_task_app/blob/main/docs/project_roadmap.md)
