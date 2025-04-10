@@ -1,6 +1,6 @@
 {
   "name": "ai-task-app-backend",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Backend for AI Task App with GPT-4 integration",
   "main": "server.js",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",

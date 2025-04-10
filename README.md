@@ -27,7 +27,8 @@ backend/
 ├── middleware/        # JWT auth, walidacja danych
 ├── validators/        # Walidatory pól (express-validator)
 ├── services/          # Integracja z GPT (gptService.js)
-├── utils/             # sendSuccess/sendError
+├── utils/             # sendSuccess/sendError + logGPTFallback
+├── logs/              # Fallbacki odpowiedzi GPT (logs/gpt_fallbacks.log)
 ├── .env               # Zmienne środowiskowe
 ├── prettier.config.js # Formatowanie kodu
 └── server.js          # Główna aplikacja Express
@@ -71,19 +72,20 @@ npm run dev
 ## 🗂️ Zadania
 
 - Endpointy `POST`, `GET`, `PUT`, `POST /close` dla `/api/tasks`
-- Nowość: `POST /api/tasks/ai-create` – tworzenie zadania z pomocą GPT-4o
-- Obsługa pola `dueDate` (termin wykonania, opcjonalny)
-- Walidacja pól zadań (`description`, `title`, `status`, `dueDate`)
-- Middleware `validate.js` + `taskValidator.js`
+- Endpoint `POST /api/tasks/ai-create` – tworzenie zadania z pomocą GPT-4o
+  - GPT zwraca dane w formacie JSON
+  - Obsługiwany fallback: jeśli odpowiedź nie jest parsowalna, zapis do `notes`
+  - Błędy zapisywane do `logs/gpt_fallbacks.log`
 
 ---
 
 ## 🧠 Integracja AI – GPT-4o (OpenAI)
 
-- Wykorzystanie modelu GPT-4o do generowania struktury zadania
-- Obsługiwane przez `services/gptService.js`
-- Automatyczne tworzenie `notes` na podstawie promptu użytkownika
-- Możliwość dalszej rozbudowy (podsumowania, analiza trudności, itp.)
+- Model GPT-4o tworzy strukturę zadania: `title`, `description`, `dueDate`, `notes`
+- Prompt uwzględnia aktualną datę systemową
+- Odpowiedź oczyszczana z markdown
+- W przypadku błędu parsowania – fallback + logowanie
+- Planowane: `difficulty`, podobne zadania (embedding)
 
 ---
 
@@ -91,8 +93,6 @@ npm run dev
 
 Do formatowania kodu backendu używany jest Prettier.  
 Plik konfiguracyjny: `prettier.config.js`
-
-**Przykład:**
 
 ```bash
 npm run format
@@ -110,3 +110,5 @@ npm run format
 - `middleware.md`
 - `utils.md`
 - `validators.md`
+- `services.md`
+- `ai_integration.md`

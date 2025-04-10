@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.0.7] – 2025-04-10
+
+### Added
+
+- Obsługa odpowiedzi GPT w formacie JSON przy tworzeniu zadania (`/api/tasks/ai-create`)
+- Parsowanie odpowiedzi GPT i fallback do `notes` w przypadku niepoprawnego JSON
+- Funkcja `logGPTFallback()` zapisująca przypadki błędnego JSON do `logs/gpt_fallbacks.log`
+- Uwzględnienie bieżącej daty w promcie do GPT, aby poprawnie rozpoznawać daty `dueDate`
+- Dokumentacja dla `logGPTFallback` w `utils.md`
+- Planowana integracja z modelem `text-embedding-3-small` do porównywania podobnych zadań (wstępna analiza semantyczna)
+- Zaplanowana funkcja oceny trudności zadania (`difficulty: 1–5`) – obecnie w fazie koncepcyjnej
+
+### Changed
+
+- Zmodyfikowano `gptService.js`:
+  - prompt GPT generuje czysty JSON bez markdown
+  - obsługa wyjątku `JSON.parse()` z fallbackiem
+- Zmodyfikowano `createWithAI` w `taskController.js` – integracja z nową wersją GPT API
+- Uaktualniono dokumentację: `ai_integration.md`, `project_roadmap.md`, `services.md`, `backend_overview.md`, `utils.md`
+
+# Changelog
+
 ## [0.0.6] – 2025-04-10
 
 ### Added

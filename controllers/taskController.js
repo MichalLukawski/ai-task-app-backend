@@ -77,24 +77,25 @@ exports.closeTask = async (req, res) => {
 exports.createWithAI = async (req, res) => {
   try {
     const { description } = req.body;
-
-    if (!description || description.trim().lenght < 5) {
-      return sendError(res, 'Description is too short or missing', 400);
+    if (!description || description.length < 5) {
+      return sendError(res, "Description is required and must be at least 5 characters", 400);
     }
 
-    const aiResponse = await getTaskStructureFromAI(description);
+    const structure = await getTaskStructureFromAI(description);
 
-    const newTask = new Task({
+    const task = new Task({
       ownerId: req.user.id,
-      description,
-      notes: aiResponse, // odpowiedź GPT zapisujemy jako notatki
-      status: 'open',
+      description: structure.description || description,
+      title: structure.title || "",
+      notes: structure.notes || "",
+      dueDate: structure.dueDate || null
     });
 
-    await newTask.save();
-    return sendSuccess(res, 'AI-generated task created', newTask, 201);
+    await task.save();
+
+    return sendSuccess(res, "AI-generated task created", task, 201);
   } catch (err) {
-    console.error('AI task creation error: ', err);
-    return sendError(res, 'Failed to create task with AI', 500);
+    console.error(err);
+    return sendError(res, "Nie udało się stworzyć zadania z pomocą AI", 500);
   }
 };
