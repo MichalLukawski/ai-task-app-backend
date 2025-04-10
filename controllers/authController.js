@@ -30,7 +30,7 @@ const login = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user){
+    if (!user) {
       return sendError(res, 'Invalid email or password', 401, 'INVALID_CREDENTIALS');
     }
 

@@ -1,11 +1,10 @@
 // backend/server.js
 const express = require('express');
 const dotenv = require('dotenv');
-const cors = require ('cors');
+const cors = require('cors');
 
 const connectDB = require('./config/db');
 const taskRoutes = require('./routes/taskRoutes');
-
 
 // Wczytaj zmienne środowiskowe z pliku .env
 dotenv.config();
@@ -19,12 +18,10 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/tasks', taskRoutes);
 
-
-
 //prosty test, czy serwer działa – można otworzyć w przeglądarce lub curl/postmanem
-const { sendSuccess } = require ('./utils/responseHandler');
+const { sendSuccess } = require('./utils/responseHandler');
 app.get('/', (req, res) => {
-    sendSuccess(res, 'AI Task App backend is running!');
+  sendSuccess(res, 'AI Task App backend is running!');
 });
 
 //import i użycie tras. Oddziela logikę rejestracji/logowania od pliku głównego. Oddzielenie odpowiedzialności (Separation of Concerns)
@@ -33,7 +30,7 @@ app.use('/api/auth', authRoutes);
 
 //Połączenie z MongoDB i uruchomienie serwera
 connectDB().then(() => {
-    app.listen(process.env.PORT || 5000, () => {
-        console.log(`🚀 Server running on port ${process.env.PORT}`);
-    });
+  app.listen(process.env.PORT || 5000, () => {
+    console.log(`🚀 Server running on port ${process.env.PORT}`);
+  });
 });

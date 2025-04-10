@@ -38,6 +38,7 @@ backend/
 ## 🚀 Uruchomienie backendu
 
 1. Skonfiguruj plik `.env`:
+
 ```
 MONGO_URI=mongodb://localhost:27017/ai-task-app
 JWT_SECRET=twoj_super_sekret
@@ -46,11 +47,13 @@ PORT=5000
 ```
 
 2. Zainstaluj zależności:
+
 ```bash
 npm install
 ```
 
 3. Uruchom serwer:
+
 ```bash
 npm run dev
 ```
@@ -90,6 +93,7 @@ Do formatowania kodu backendu używany jest Prettier.
 Plik konfiguracyjny: `prettier.config.js`
 
 **Przykład:**
+
 ```bash
 npm run format
 ```
