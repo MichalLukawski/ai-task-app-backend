@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.0.6] – 2025-04-10
+
+### Added
+- Endpoint `POST /api/tasks/ai-create` do tworzenia zadań z pomocą GPT-4o
+- Moduł `gptService.js` do komunikacji z OpenAI API
+- Plik konfiguracyjny `prettier.config.js`
+- Automatyczne formatowanie kodu backendu za pomocą Prettiera
+
+### Changed
+- Plik `taskController.js`: dodanie metody `createWithAI`
+- Plik `taskRoutes.js`: dodanie trasy `/api/tasks/ai-create`
+- Plik `package.json`: aktualizacja wersji, zależności (`openai`)
+- Formatowanie plików backendu (zgodność z Prettier)
+
+
+# Changelog
+
 ## [0.0.5] – 2025-04-10
 
 ### Dodano

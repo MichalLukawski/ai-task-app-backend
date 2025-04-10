@@ -2,6 +2,7 @@
 
 const Task = require('../models/Task');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
+const { getTaskStructureFromAI } = require('../services/gptService');
 
 //Tworzenie nowego zadania
 exports.createTask = async (req, res) => {
@@ -72,4 +73,30 @@ exports.closeTask = async (req, res) => {
     } catch (err) {
         return sendError(res, 'Failed to close task', 500);
     }
+};
+
+//Tworzenie nowego zadania z wykorzystaniem AI
+exports.createWithAI = async (req, res) => {
+    try {
+        const { description } = req.body;
+
+        if (!description || description.trim().lenght < 5) {
+            return sendError(res, 'Description is too short or missing', 400);
+    }
+
+    const aiResponse = await getTaskStructureFromAI(description);
+
+    const newTask = new Task({
+        ownerId: req.user.id,
+        description,
+        notes: aiResponse, // odpowiedź GPT zapisujemy jako notatki
+        status: 'open'
+    });
+
+    await newTask.save();
+    return sendSuccess(res, 'AI-generated task created', newTask, 201);
+} catch (err) {
+    console.error('AI task creation error: ', err);
+    return sendError(res, 'Failed to create task with AI', 500);
+}
 };

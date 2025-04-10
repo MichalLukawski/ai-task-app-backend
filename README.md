@@ -1,6 +1,6 @@
 # AI Task App – Backend
 
-Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzialny za rejestrację użytkowników, zarządzanie zadaniami oraz integrację z AI (planowana).
+Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzialny za rejestrację użytkowników, zarządzanie zadaniami oraz integrację z AI.
 
 ## 🧰 Technologie
 
@@ -11,7 +11,8 @@ Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzial
 - Dotenv (zmienne środowiskowe)
 - CORS
 - Express-validator (walidacja danych wejściowych)
-- Moduły pomocnicze (`utils/`, `middleware/`, `validators/`)
+- OpenAI API (GPT-4o)
+- Prettier (formatowanie kodu)
 
 ---
 
@@ -25,8 +26,10 @@ backend/
 ├── routes/            # Ścieżki API
 ├── middleware/        # JWT auth, walidacja danych
 ├── validators/        # Walidatory pól (express-validator)
+├── services/          # Integracja z GPT (gptService.js)
 ├── utils/             # sendSuccess/sendError
 ├── .env               # Zmienne środowiskowe
+├── prettier.config.js # Formatowanie kodu
 └── server.js          # Główna aplikacja Express
 ```
 
@@ -38,6 +41,7 @@ backend/
 ```
 MONGO_URI=mongodb://localhost:27017/ai-task-app
 JWT_SECRET=twoj_super_sekret
+OPENAI_API_KEY=sk-... (własny klucz OpenAI)
 PORT=5000
 ```
 
@@ -48,9 +52,7 @@ npm install
 
 3. Uruchom serwer:
 ```bash
-node server.js
-# lub z nodemon:
-npx nodemon server.js
+npm run dev
 ```
 
 ---
@@ -66,17 +68,31 @@ npx nodemon server.js
 ## 🗂️ Zadania
 
 - Endpointy `POST`, `GET`, `PUT`, `POST /close` dla `/api/tasks`
+- Nowość: `POST /api/tasks/ai-create` – tworzenie zadania z pomocą GPT-4o
 - Obsługa pola `dueDate` (termin wykonania, opcjonalny)
 - Walidacja pól zadań (`description`, `title`, `status`, `dueDate`)
 - Middleware `validate.js` + `taskValidator.js`
 
 ---
 
-## 🧠 Integracja AI (planowana)
+## 🧠 Integracja AI – GPT-4o (OpenAI)
 
-- GPT-4 generuje tytuł/opis zadania
-- Tworzenie podsumowań przy zamykaniu
-- Semantyczne porównania (`/api/ai/similar-tasks`)
+- Wykorzystanie modelu GPT-4o do generowania struktury zadania
+- Obsługiwane przez `services/gptService.js`
+- Automatyczne tworzenie `notes` na podstawie promptu użytkownika
+- Możliwość dalszej rozbudowy (podsumowania, analiza trudności, itp.)
+
+---
+
+## 🎨 Formatowanie kodu
+
+Do formatowania kodu backendu używany jest Prettier.  
+Plik konfiguracyjny: `prettier.config.js`
+
+**Przykład:**
+```bash
+npm run format
+```
 
 ---
 
