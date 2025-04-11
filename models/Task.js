@@ -1,29 +1,34 @@
-// backend/models/Task.js
+// models/Task.js
 
 const mongoose = require('mongoose');
 
-const TaskSchema = new mongoose.Schema({
-  ownerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
+const taskSchema = new mongoose.Schema({
   title: {
     type: String,
-    default: '',
+    required: true,
+    trim: true,
   },
   description: {
     type: String,
     required: true,
-  },
-  notes: {
-    type: String,
-    default: '',
+    trim: true,
   },
   dueDate: {
     type: Date,
-    default: null,
   },
+  notes: {
+    type: String,
+  },
+  difficulty: {
+    type: Number,
+    min: 1,
+    max: 5,
+  },
+  summary: {
+    type: String,
+  },
+  similarTasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }],
+  embedding: [Number],
   status: {
     type: String,
     enum: ['open', 'closed'],
@@ -36,6 +41,11 @@ const TaskSchema = new mongoose.Schema({
   closedAt: {
     type: Date,
   },
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 });
 
-module.exports = mongoose.model('Task', TaskSchema);
+module.exports = mongoose.model('Task', taskSchema);

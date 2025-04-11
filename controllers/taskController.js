@@ -2,7 +2,8 @@
 
 const Task = require('../models/Task');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
-const { getTaskStructureFromAI } = require('../services/gptService');
+const { getTaskStructureFromAI } = require('../services/gptService.function');
+const { generateAndAttachEmbedding } = require('../services/embeddingService');
 
 //Tworzenie nowego zadania
 exports.createTask = async (req, res) => {
@@ -78,24 +79,29 @@ exports.createWithAI = async (req, res) => {
   try {
     const { description } = req.body;
     if (!description || description.length < 5) {
-      return sendError(res, "Description is required and must be at least 5 characters", 400);
+      return sendError(res, 'Description is required and must be at least 5 characters', 400);
     }
 
     const structure = await getTaskStructureFromAI(description);
 
+    if (structure.difficulty === undefined) {
+      console.warn('⚠️ AI did not return difficulty');
+    }
+
     const task = new Task({
       ownerId: req.user.id,
       description: structure.description || description,
-      title: structure.title || "",
-      notes: structure.notes || "",
-      dueDate: structure.dueDate || null
+      title: structure.title || '',
+      dueDate: structure.dueDate || null,
+      difficulty: structure.difficulty ?? null,
     });
 
     await task.save();
+    await generateAndAttachEmbedding(task._id);
 
-    return sendSuccess(res, "AI-generated task created", task, 201);
+    return sendSuccess(res, 'AI-generated task created', task, 201);
   } catch (err) {
     console.error(err);
-    return sendError(res, "Nie udało się stworzyć zadania z pomocą AI", 500);
+    return sendError(res, 'Nie udało się stworzyć zadania z pomocą AI', 500);
   }
 };

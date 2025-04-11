@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.0.8] – 2025-04-11
+
+### Added
+
+- Wdrożenie GPT function calling (`gptService.function.js`) z pełną strukturą `title`, `description`, `dueDate`, `difficulty`
+- Moduł `embeddingService.js`:
+  - Generowanie embeddingów (`text-embedding-3-small`)
+  - Porównywanie embeddingów z zamkniętymi zadaniami (cosine similarity)
+  - Przypisywanie podobnych zadań (`similarTasks`) – top 5 z wynikiem >= 0.75
+- Asynchroniczne wywołanie `generateAndAttachEmbedding()` po zapisaniu zadania
+- Obsługa pola `difficulty` generowanego przez GPT
+- Obsługa pola `embedding` i `similarTasks` w modelu `Task`
+- Dokumentacja funkcji AI i podobieństw (`project_roadmap.md`, `ai_integration.md`)
+- Ujednolicone formaty dokumentacji: `utils.md`, `services.md`, `models.md`, `controllers.md`, `backend_overview.md`, `project_overview.md`, `README.md`, `README (root).md`
+- Nowy sposób dokumentowania (tylko stan aktualny, zmiany w changelogu)
+
+### Changed
+
+- Usunięto fallback i logger (`logGPTFallback`) z `gptService.js`
+- `createWithAI` korzysta z `gptService.function.js` i nie zapisuje już `notes`
+- `taskModel.js` – usunięto `tags`, `priority`, `source`, dodano `difficulty`
+- Rozdzielono `gptService.js` na `gptService.function.js` (function calling)
+- Aktualizacja `db_schema.md` zgodnie z nowym modelem `Task`
+- Refaktoryzacja dokumentacji do aktualnego stanu projektu
+
+### Removed
+
+- `logGPTFallback()` i plik `logs/gpt_fallbacks.log`
+- Fallback JSON (`try/catch + notes`) – zastąpiony przez function calling
+- Wzmianki o `notes` z flow backendu (pozostaje opcjonalne w modelu)
+
+---
+
+# Changelog
+
 ## [0.0.7] – 2025-04-10
 
 ### Added
