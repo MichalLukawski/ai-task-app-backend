@@ -6,7 +6,7 @@ const Task = require('../models/Task');
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-/**
+/*
  * Generuje embedding z tekstu
  */
 async function generateEmbedding(text) {
@@ -40,6 +40,7 @@ async function findSimilarTasks(newEmbedding) {
   const scored = candidates
     .map((task) => {
       const score = cosineSimilarity(newEmbedding, task.embedding);
+      console.log(`similarity: ${score}`);
       return { taskId: task._id, similarity: score };
     })
     .filter((entry) => entry.similarity >= 0.75)

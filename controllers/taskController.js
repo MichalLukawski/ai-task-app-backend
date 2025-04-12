@@ -4,6 +4,7 @@ const Task = require('../models/Task');
 const { sendSuccess, sendError } = require('../utils/responseHandler');
 const { getTaskStructureFromAI } = require('../services/gptService.function');
 const { generateAndAttachEmbedding } = require('../services/embeddingService');
+const { processTaskClosure } = require('../services/aiSummaryService');
 
 //Tworzenie nowego zadania
 exports.createTask = async (req, res) => {
@@ -103,5 +104,32 @@ exports.createWithAI = async (req, res) => {
   } catch (err) {
     console.error(err);
     return sendError(res, 'Nie udało się stworzyć zadania z pomocą AI', 500);
+  }
+};
+
+exports.closeTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task || task.ownerId.toString() !== req.user.id) {
+      return sendError(res, 'Task not found or unauthorized access.', 400);
+    }
+
+    const { summary, sourceTaskId, force = false } = req.body;
+
+    const processedSummary = await processTaskClosure({
+      task,
+      userSummary: summary,
+      sourceTaskId,
+      force,
+    });
+
+    task.status = 'closed';
+    task.closedAt = new Date();
+    task.summary = processedSummary;
+
+    await task.save();
+    return sendSuccess(res, 'Task closed successfully', task);
+  } catch (err) {
+    return sendError(res, err.message);
   }
 };

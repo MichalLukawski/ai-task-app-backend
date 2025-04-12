@@ -26,7 +26,7 @@ backend/
 ├── routes/             # Ścieżki API
 ├── middleware/         # JWT auth, walidacja danych
 ├── validators/         # Walidatory pól (express-validator)
-├── services/           # gptService.function.js, embeddingService.js
+├── services/           # gptService.function.js, aiSummaryService.js, embeddingService.js
 ├── utils/              # responseHandler.js (sendSuccess/sendError)
 ├── prettier.config.js  # Formatowanie kodu
 └── server.js           # Główna aplikacja Express
@@ -69,22 +69,26 @@ npm run dev
 
 ## 🗂️ Zadania
 
-- Endpointy `POST`, `GET`, `PUT`, `POST /close` dla `/api/tasks`
+- Endpointy `POST`, `GET`, `PUT` dla `/api/tasks`
 - Endpoint `POST /api/tasks/ai-create`:
-  - Używa GPT-4o (function calling)
-  - Generuje `title`, `description`, `dueDate`, `difficulty`
-  - Zadanie zapisywane do MongoDB
-  - Następnie generowany jest `embedding`
-  - Przypisywane są podobne zadania (`similarTasks`) jeśli similarity >= 0.75
+
+  - GPT-4o (function calling) generuje strukturę zadania
+  - Po zapisaniu zadania generowany jest `embedding`
+  - Przypisywane są `similarTasks` (jeśli similarity >= 0.75)
+
+- Endpoint `POST /api/tasks/:id/ai-close`:
+  - Użytkownik podaje `summary` → AI ocenia i wygładza
+  - Jeśli opis zbyt krótki – można wymusić (`force: true`)
+  - Można wskazać `sourceTaskId` → system kopiuje `summary` z innego zadania
+  - Brak `summary` i `sourceTaskId` → błąd
 
 ---
 
 ## 🧠 Integracja AI – GPT-4o (OpenAI)
 
-- Mechanizm function calling (OpenAI tools)
-- Odpowiedź GPT zawiera kompletne dane w formacie strukturalnym
-- Brak fallbacków – wyłącznie poprawny JSON
-- Obsługa `difficulty` i automatyczne dopasowanie podobnych zadań (embedding)
+- Function calling (`create_task`, `assess_summary`, `improve_summary`)
+- Brak fallbacków – tylko poprawny JSON
+- AI nie generuje `summary` samodzielnie – użytkownik zawsze musi je podać lub wybrać inne zadanie jako źródło
 
 ---
 

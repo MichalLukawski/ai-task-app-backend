@@ -25,4 +25,16 @@ exports.validateTaskInput = [
     .optional()
     .isISO8601()
     .withMessage('Due date must be a valid ISO 8601 date (YYYY-MM-DD or full datetime)'),
+
+  body('difficulty')
+    .notEmpty()
+    .withMessage('Difficulty is required')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Difficulty must be an integer between 1 and 5'),
+];
+
+exports.validateCloseTaskInput = [
+  body('summary').optional().isString(),
+  body('sourceTaskId').optional().isMongoId(),
+  body('force').optional().isBoolean(),
 ];

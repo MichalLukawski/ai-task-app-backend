@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.0.9] – 2025-04-12
+
+### Added
+
+- Endpoint `POST /api/tasks/:id/ai-close` jako nowy sposób zamykania zadań:
+  - Obsługa własnych podsumowań (`summary`) ocenianych przez AI
+  - Wymuszenie użycia słabego opisu przez pole `force: true`
+  - Wygładzanie opisu przez `improveSummary`
+  - Możliwość skopiowania `summary` z innego zadania (`sourceTaskId`)
+- Moduł `aiSummaryService.js` – logika warunkowa dla `ai-close`
+- Nowe funkcje GPT (function calling):
+  - `assess_summary` – ocena jakości opisu użytkownika
+  - `improve_summary` – wygładzanie języka bez zmiany sensu
+- Nowy walidator `validateCloseTaskInput`
+- Aktualizacja dokumentacji:
+  - `api_spec.md`, `routes.md`, `controllers.md`
+  - `project_overview.md`, `project_roadmap.md`, `backend_overview.md`
+  - `services.md`, `ai_integration.md`, `validators.md`, `README.md`, `README_backend.md`, `db_schema.md`
+
+### Changed
+
+- Zmieniono logikę zamykania zadań:
+  - `summary` nie może być generowane automatycznie z `similarTasks`
+  - AI nie podejmuje decyzji – zawsze wymagana inicjatywa użytkownika
+- Zmiana trasy zamykania z `/close` na `/ai-close`
+- AI nie działa, jeśli użytkownik nie poda opisu lub `sourceTaskId`
+
+### Removed
+
+- Obsługa `summary` generowanego automatycznie z `similarTasks` (zrezygnowano celowo)
+- Zależność od decyzji AI w procesie zamykania – kontrola wyłącznie po stronie użytkownika
+
+# Changelog
+
 ## [0.0.8] – 2025-04-11
 
 ### Added
