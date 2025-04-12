@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.0.10] – 2025-04-13
+
+### Added
+
+- Nowy endpoint `PATCH /api/tasks/:id/close` do zamykania zadań poprzez kopiowanie `summary` z innego zadania (`sourceTaskId`)
+- Całkowite rozdzielenie logiki zamykania zadań:
+  - `/ai-close` – tylko z AI, wymaga `summary`, opcjonalne `force`
+  - `/close` – tylko kopiowanie, wymaga `sourceTaskId`, `summary` niedozwolone
+- Walidator `validateCloseTaskSimpleInput` do `/close`
+- Walidator `validateUpdateTaskInput` do `PATCH /:id` (częściowa edycja)
+- Aktualizacja dokumentacji:
+  - `controllers.md`, `routes.md`, `api_spec.md`, `validators.md`
+  - `project_overview.md`, `project_roadmap.md`, `backend_overview.md`
+  - `services.md`, `ai_integration.md`, `README.md`, `README_backend.md`
+
+### Changed
+
+- Zamiana metody `POST` na `PATCH` w endpointach zamykających (`/close`, `/ai-close`) i edytujących (`/:id`)
+- `validateTaskInput` używany tylko przy tworzeniu (`POST`), nie przy edycji
+- `summary` może być przesyłany tylko w `/ai-close` i zawsze przechodzi ocenę AI
+- Użytkownik może wymusić użycie słabego podsumowania (`force: true`)
+
+### Removed
+
+- Obsługa `sourceTaskId` w `/ai-close` – przeniesiona wyłącznie do `/close`
+- Możliwość wp
+
 ## [0.0.9] – 2025-04-12
 
 ### Added
@@ -31,8 +58,6 @@
 
 - Obsługa `summary` generowanego automatycznie z `similarTasks` (zrezygnowano celowo)
 - Zależność od decyzji AI w procesie zamykania – kontrola wyłącznie po stronie użytkownika
-
-# Changelog
 
 ## [0.0.8] – 2025-04-11
 
@@ -67,8 +92,6 @@
 
 ---
 
-# Changelog
-
 ## [0.0.7] – 2025-04-10
 
 ### Added
@@ -89,8 +112,6 @@
 - Zmodyfikowano `createWithAI` w `taskController.js` – integracja z nową wersją GPT API
 - Uaktualniono dokumentację: `ai_integration.md`, `project_roadmap.md`, `services.md`, `backend_overview.md`, `utils.md`
 
-# Changelog
-
 ## [0.0.6] – 2025-04-10
 
 ### Added
@@ -106,8 +127,6 @@
 - Plik `taskRoutes.js`: dodanie trasy `/api/tasks/ai-create`
 - Plik `package.json`: aktualizacja wersji, zależności (`openai`)
 - Formatowanie plików backendu (zgodność z Prettier)
-
-# Changelog
 
 ## [0.0.5] – 2025-04-10
 
@@ -125,8 +144,6 @@
 - Trasy `POST` i `PUT /api/tasks` obsługują dodatkowe pole `dueDate`
 - Zaktualizowano `README.md` backendu o informacje o walidacji i dueDate
 - Podniesiono wersję `package.json` do `0.0.5`
-
-# Changelog
 
 ## [0.0.4] – 2025-04-09
 
@@ -149,8 +166,6 @@
 
 - Literówki w `process.env.JWT_SECRET`
 - Duplikaty tras w `server.js`
-
-# Changelog
 
 ## [0.0.3] – 2025-04-09
 

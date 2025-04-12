@@ -14,8 +14,9 @@ async function getTaskStructureFromAI(description) {
   const messages = [
     {
       role: 'system',
-      content: `Dziś jest ${today}. Na podstawie opisu użytkownika wygeneruj dane potrzebne do utworzenia zadania. Opis powinien być maksymalnie konkretny i zoptymalizowany pod późniejsze porównywanie przez modele embeddingowe (np. OpenAI embeddings).
-Unikaj ogólników.`,
+      content: `Today is ${today}. Based on the user's description, generate the data required to create a task.
+  The description should be as specific and technically detailed as possible.
+  Avoid general or vague language. Always respond in the same language as the user's input.`,
     },
     {
       role: 'user',
@@ -28,28 +29,27 @@ Unikaj ogólników.`,
       type: 'function',
       function: {
         name: 'create_task',
-        description: 'Tworzy strukturę zadania na podstawie opisu użytkownika',
+        description: 'Generates a task structure based on the user’s description.',
         parameters: {
           type: 'object',
           properties: {
             title: {
               type: 'string',
-              description: 'Krótki tytuł zadania',
+              description: 'A short, concise title for the task.',
             },
             description: {
               type: 'string',
               description:
-                'Pełny opis zadania, zoptymalizowany pod embedding (techniczne szczegóły, konkretne komunikaty, kody błędów itd.)',
+                'A detailed technical description of the task, suitable for embedding models (e.g., technical context, error messages, stack traces).',
             },
             dueDate: {
               type: 'string',
-              description: 'Termin wykonania zadania (ISO format), tylko jeśli podano w opisie.',
+              description: 'Due date in ISO 8601 format, only if clearly specified by the user.',
               format: 'date',
             },
             difficulty: {
               type: 'number',
-              description:
-                'Szacowany poziom trudności zadania (od 1 = bardzo łatwe do 5 = bardzo trudne)',
+              description: 'Estimated difficulty of the task (1 = very easy, 5 = very hard).',
               minimum: 1,
               maximum: 5,
             },
@@ -86,12 +86,11 @@ async function getSummaryAssessment(taskDescription, userInput) {
   const messages = [
     {
       role: 'system',
-      content:
-        'You are an assistant helping users improve summaries of technical tasks. Respond using function calling.',
+      content: `Today is ${today}. You are an assistant that improves summaries of technical tasks. Make them clear, specific and helpful. Avoid vague language. Always respond in the same language as the user's input.`,
     },
     {
       role: 'user',
-      content: `Task description:\n"${taskDescription}"\n\nUser-provided summary:\n"${userInput}"`,
+      content: `Task description:\n"${taskDescription}"\n\nUser-provided summary:\n"${userInput}".`,
     },
   ];
 
@@ -144,8 +143,7 @@ async function improveSummary(userInput) {
   const messages = [
     {
       role: 'system',
-      content:
-        'You are an assistant that improves summaries of technical tasks. Return only the improved version using a function call.',
+      content: `Today is ${today}. You are an assistant that improves summaries of technical tasks. Make them clear, specific and helpful. Avoid vague language. Always respond in the same language as the user's input.`,
     },
     {
       role: 'user',
