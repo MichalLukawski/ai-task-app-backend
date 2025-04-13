@@ -1,22 +1,24 @@
 // services/gptService.function.js
 
 require('dotenv').config();
-
+const { getOpenAIKey } = require('./openaiKeyManager');
 const { OpenAI } = require('openai');
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const today = new Date().toISOString().split('T')[0];
 
 /**
- * Nowa wersja z użyciem function calling
+ * Generates a task structure from user description using GPT function calling
  */
 async function getTaskStructureFromAI(description) {
+  const apiKey = await getOpenAIKey();
+  const openai = new OpenAI({ apiKey });
+
   const messages = [
     {
       role: 'system',
       content: `Today is ${today}. Based on the user's description, generate the data required to create a task.
-  The description should be as specific and technically detailed as possible.
-  Avoid general or vague language. Always respond in the same language as the user's input.`,
+The description should be as specific and technically detailed as possible.
+Avoid general or vague language. Always respond in the same language as the user's input.`,
     },
     {
       role: 'user',
@@ -74,8 +76,7 @@ async function getTaskStructureFromAI(description) {
       throw new Error('Missing or invalid response from function call');
     }
 
-    const parsed = JSON.parse(call.function.arguments);
-    return parsed;
+    return JSON.parse(call.function.arguments);
   } catch (error) {
     console.error('GPT function call error:', error.message);
     throw new Error('Error while generating task via AI function calling');
@@ -83,6 +84,9 @@ async function getTaskStructureFromAI(description) {
 }
 
 async function getSummaryAssessment(taskDescription, userInput) {
+  const apiKey = await getOpenAIKey();
+  const openai = new OpenAI({ apiKey });
+
   const messages = [
     {
       role: 'system',
@@ -140,6 +144,9 @@ async function getSummaryAssessment(taskDescription, userInput) {
 }
 
 async function improveSummary(userInput) {
+  const apiKey = await getOpenAIKey();
+  const openai = new OpenAI({ apiKey });
+
   const messages = [
     {
       role: 'system',

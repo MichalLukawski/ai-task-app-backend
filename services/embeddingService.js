@@ -1,16 +1,22 @@
-// services/embeddingService.js
-
 require('dotenv').config();
 const { OpenAI } = require('openai');
+const { getOpenAIKey } = require('./openaiKeyManager');
 const Task = require('../models/Task');
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+/*
+ * Generates an OpenAI client using dynamic API key from database
+ */
+async function getOpenAIClient() {
+  const apiKey = await getOpenAIKey();
+  return new OpenAI({ apiKey });
+}
 
 /*
- * Generuje embedding z tekstu
+ * Generates an embedding from the provided text
  */
 async function generateEmbedding(text) {
   try {
+    const openai = await getOpenAIClient();
     const response = await openai.embeddings.create({
       model: 'text-embedding-3-small',
       input: text,
@@ -18,11 +24,14 @@ async function generateEmbedding(text) {
 
     return response.data[0].embedding;
   } catch (err) {
-    console.errror('Embedding generation error: ', err.message);
+    console.error('Embedding generation error:', err.message);
     throw new Error('Failed to generate embedding.');
   }
 }
 
+/*
+ * Calculates cosine similarity between two embedding vectors
+ */
 function cosineSimilarity(a, b) {
   const dotProduct = a.reduce((sum, ai, i) => sum + ai * b[i], 0);
   const normA = Math.sqrt(a.reduce((sum, ai) => sum + ai * ai, 0));
@@ -31,6 +40,9 @@ function cosineSimilarity(a, b) {
   return dotProduct / (normA * normB);
 }
 
+/*
+ * Finds top 5 similar tasks with cosine similarity >= 0.75
+ */
 async function findSimilarTasks(newEmbedding) {
   const candidates = await Task.find({
     status: 'closed',
@@ -50,6 +62,9 @@ async function findSimilarTasks(newEmbedding) {
   return scored;
 }
 
+/*
+ * Generates and attaches embedding + similarTasks to given task
+ */
 async function generateAndAttachEmbedding(taskId) {
   try {
     const task = await Task.findById(taskId);

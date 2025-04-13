@@ -33,30 +33,27 @@ exports.validateTaskInput = [
 ];
 
 exports.validateUpdateTaskInput = [
-  body("title")
+  body('title')
     .optional()
     .isLength({ min: 3, max: 100 })
-    .withMessage("Title must be between 3 and 100 characters"),
+    .withMessage('Title must be between 3 and 100 characters'),
 
-  body("description")
+  body('description')
     .optional()
     .isLength({ min: 5 })
-    .withMessage("Description must be at least 5 characters long"),
+    .withMessage('Description must be at least 5 characters long'),
 
-  body("status")
+  body('status')
     .optional()
-    .isIn(["open", "closed"])
+    .isIn(['open', 'closed'])
     .withMessage("Status must be either 'open' or 'closed'"),
 
-  body("dueDate")
-    .optional()
-    .isISO8601()
-    .withMessage("Due date must be a valid ISO 8601 date"),
+  body('dueDate').optional().isISO8601().withMessage('Due date must be a valid ISO 8601 date'),
 
-  body("difficulty")
+  body('difficulty')
     .optional()
     .isInt({ min: 1, max: 5 })
-    .withMessage("Difficulty must be between 1 and 5"),
+    .withMessage('Difficulty must be between 1 and 5'),
 ];
 
 exports.validateCreateTaskWithAI = [

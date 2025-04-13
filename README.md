@@ -1,6 +1,33 @@
-# AI Task App – Backend
+# 🧠 AI Task App – Backend README
 
-Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzialny za rejestrację użytkowników, zarządzanie zadaniami oraz integrację z AI (GPT-4o + embeddingi). System wspiera zarówno tworzenie zadań ręcznie, jak i za pomocą AI oraz inteligentne zamykanie zadań – przez ocenę i wygładzenie `summary`, lub przez skopiowanie rozwiązania z innego zadania.
+Ten plik zawiera kompletną dokumentację backendu aplikacji AI Task App – inteligentnego systemu do zarządzania zadaniami technicznymi, wspieranego przez modele GPT-4o i embeddingi semantyczne. Backend odpowiada za rejestrację użytkowników, logowanie, obsługę zadań oraz integrację z usługami AI.
+
+---
+
+## 📚 Zawartość
+
+- [Opis projektu](#opis-projektu)
+- [Technologie](#technologie)
+- [Struktura katalogów](#struktura-katalogów)
+- [Uruchomienie](#uruchomienie)
+- [Uwierzytelnianie](#uwierzytelnianie)
+- [API zadań](#api-zadań)
+- [Integracja AI](#integracja-ai)
+- [Szyfrowanie kluczy OpenAI](#szyfrowanie-kluczy-openai)
+- [Formatowanie kodu](#formatowanie-kodu)
+- [Powiązana dokumentacja](#powiązana-dokumentacja)
+
+---
+
+## 📌 Opis projektu
+
+Backend to serwer Express.js, który:
+
+- zarządza użytkownikami (`User`)
+- obsługuje tworzenie i zamykanie zadań (`Task`)
+- korzysta z OpenAI (GPT-4o + embeddingi) do wspomagania użytkownika
+- zapisuje embeddingi i przypisuje podobne zadania
+- integruje się z frontendem przez REST API
 
 ---
 
@@ -9,12 +36,12 @@ Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzial
 - Node.js + Express
 - MongoDB + Mongoose
 - JWT (autoryzacja)
-- Bcrypt (hashowanie haseł)
+- Bcrypt (hasła)
 - Dotenv (zmienne środowiskowe)
-- CORS
-- Express-validator (walidacja danych wejściowych)
-- OpenAI API (GPT-4o + `text-embedding-3-small`)
-- Prettier (formatowanie kodu)
+- Express-validator
+- OpenAI SDK
+- AES-256-GCM (szyfrowanie kluczy)
+- Prettier (formatowanie)
 
 ---
 
@@ -24,36 +51,37 @@ Ten folder zawiera backend aplikacji AI Task App – serwer Express odpowiedzial
 backend/
 ├── config/             # Konfiguracja MongoDB
 ├── controllers/        # Logika auth + tasks
-├── models/             # Schematy: User, Task
-├── routes/             # Ścieżki API
-├── middleware/         # JWT auth, walidacja danych
-├── validators/         # Walidatory pól (express-validator)
-├── services/           # Integracje AI: gptService, aiSummaryService, embeddingService
-├── utils/              # responseHandler.js (sendSuccess/sendError)
-├── prettier.config.js  # Formatowanie kodu
+├── middleware/         # JWT, walidacja, błędy
+├── models/             # User, Task, ApiKey
+├── routes/             # Routing (auth, tasks, system)
+├── services/           # GPT, embeddingi, szyfrowanie
+├── utils/              # sendSuccess, sendError
+├── validators/         # express-validator
+├── prettier.config.js  # Konfiguracja Prettier
 └── server.js           # Główna aplikacja Express
 ```
 
 ---
 
-## 🚀 Uruchomienie backendu
+## 🚀 Uruchomienie
 
-1. Skonfiguruj plik `.env`:
+1. Utwórz plik `.env` (szczegóły: ../docs/backend/env.md)
 
-```
+```env
+PORT=5000
 MONGO_URI=mongodb://localhost:27017/ai-task-app
 JWT_SECRET=twoj_super_sekret
-OPENAI_API_KEY=sk-... (własny klucz OpenAI)
-PORT=5000
+SECRET_ENCRYPTION_KEY=64-znakowy-hex
+# OPENAI_API_KEY=sk-... (opcjonalny fallback)
 ```
 
-2. Zainstaluj zależności:
+2. Zainstaluj zależności
 
 ```bash
 npm install
 ```
 
-3. Uruchom serwer:
+3. Uruchom backend
 
 ```bash
 npm run dev
@@ -63,47 +91,54 @@ npm run dev
 
 ## 🔐 Uwierzytelnianie
 
-- JWT generowane podczas logowania (`/api/auth/login`)
-- Token przesyłany w nagłówku: `Authorization: Bearer <TOKEN>`
-- Middleware `auth.js` chroni trasy `/api/tasks`
-- Hasła przechowywane w postaci hashowanej (bcrypt)
+- Rejestracja: `POST /api/auth/register`
+- Logowanie: `POST /api/auth/login` → zwraca JWT
+- Token wymagany w: `/api/tasks`, `/api/system/...`
+- Nagłówek: `Authorization: Bearer <TOKEN>`
+- Walidacja tokena: middleware `auth.js`
 
 ---
 
-## 🗂️ Zadania
+## 🧾 API zadań
 
-- Tworzenie zadania:
+- Tworzenie:
   - `POST /api/tasks` – ręczne
-  - `POST /api/tasks/ai-create` – z pomocą GPT-4o
-- Edycja zadania:
-  - `PATCH /api/tasks/:id` – częściowa aktualizacja (tytuł, opis, termin, status)
-- Zamykanie zadania:
-  - `PATCH /api/tasks/:id/ai-close` – AI ocenia `summary` i wygładza je
-    - jeśli za krótkie lub słabe → błąd (chyba że `force: true`)
-    - AI działa tylko w tym endpointzie
+  - `POST /api/tasks/ai-create` – przez GPT
+- Edycja: `PATCH /api/tasks/:id`
+- Zamykanie:
+  - `PATCH /api/tasks/:id/ai-close` – AI ocenia i wygładza `summary`
   - `PATCH /api/tasks/:id/close` – kopiowanie `summary` z innego zadania
-    - wymaga `sourceTaskId`
-    - `summary` nie może być przesyłane ręcznie
+- Wyszukiwanie: `GET /api/tasks` – wszystkie zadania użytkownika
 
 ---
 
-## 🧠 Integracja AI – GPT-4o (OpenAI)
+## 🧠 Integracja AI
 
-- Obsługa `function calling` (z pełną strukturą JSON):
-  - `create_task` – struktura nowego zadania
-  - `assess_summary` – ocena jakości rozwiązania
-  - `improve_summary` – wygładzenie (stylistyka, użyteczność)
-- Brak fallbacków – AI zawsze odpowiada przez `tool_call`
-- Język odpowiedzi AI dostosowany do języka użytkownika
-- `summary` nie jest generowane automatycznie – użytkownik je wpisuje lub kopiuje
-- Embeddingi generowane po utworzeniu zadania – służą do porównywania z zakończonymi (`similarity ≥ 0.75`)
+- GPT-4o (`gptService.function.js`)
+  - `create_task` – wygenerowanie danych zadania
+  - `assess_summary` – ocena jakości opisu
+  - `improve_summary` – wygładzenie
+- AI zawsze odpowiada przez `tool_calls`
+- Embeddingi (`text-embedding-3-small`) generowane w `embeddingService.js`
+- `similarTasks` wybierane automatycznie (cosine similarity ≥ 0.75)
+
+---
+
+## 🔐 Szyfrowanie kluczy OpenAI
+
+- Klucze mogą być:
+  - zapisane zaszyfrowane w MongoDB (`ApiKey`)
+  - fallback do `.env` (`OPENAI_API_KEY`)
+- Szyfrowanie: AES-256-GCM
+- Klucz szyfrujący: `SECRET_ENCRYPTION_KEY` (64-znakowy hex)
+- Endpoint: `POST /api/system/openai-key` (tylko dla admina)
 
 ---
 
 ## 🎨 Formatowanie kodu
 
-Do formatowania kodu backendu używany jest Prettier.  
-Plik konfiguracyjny: `prettier.config.js`
+Plik `prettier.config.js` zapewnia jednolity styl kodu.  
+Aby sformatować:
 
 ```bash
 npm run format
@@ -111,14 +146,11 @@ npm run format
 
 ---
 
-## 📄 Dokumentacja
+## 📄 Powiązana dokumentacja
 
-- `project_overview.md` – cel, architektura, sposób działania
-- `backend_overview.md` – szczegóły backendu
-- `api_spec.md` – endpointy, metody, pola, odpowiedzi
-- `project_roadmap.md` – harmonogram etapów
-- `controllers.md` – kontrolery i ich logika
-- `validators.md` – walidatory danych
-- `services.md` – AI, embeddingi, obsługa GPT
-- `ai_integration.md` – function calling, zasady działania GPT
-- `middleware.md`, `utils.md` – warstwy pomocnicze
+- `backend_overview.md` – szczegółowy opis backendu
+- `api_spec.md` – endpointy, metody, parametry
+- `controllers.md`, `validators.md`, `services.md`
+- `middleware.md`, `utils.md`
+- `ai_integration.md` – GPT + embeddingi
+- `b_env_FULL.md` – zmienne środowiskowe backendu

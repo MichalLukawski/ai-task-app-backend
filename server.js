@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const connectDB = require('./config/db');
 const taskRoutes = require('./routes/taskRoutes');
+const systemRoutes = require('./routes/systemRoutes');
 
 // Wczytaj zmienne środowiskowe z pliku .env
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(cors());
 //umożliwia obsługę JSON-a w requestach (req.body)
 app.use(express.json());
 app.use('/api/tasks', taskRoutes);
+app.use('/api/system', systemRoutes);
 
 //prosty test, czy serwer działa – można otworzyć w przeglądarce lub curl/postmanem
 const { sendSuccess } = require('./utils/responseHandler');

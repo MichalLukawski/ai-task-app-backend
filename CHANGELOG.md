@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.0.11] – 2025-04-13
+
+### Added
+
+- System szyfrowania klucza OpenAI z użyciem AES-256-GCM:
+  - Model `ApiKey` w MongoDB
+  - Moduł `services/openaiKeyManager.js`
+  - Endpoint `POST /api/system/openai-key`
+  - Wsparcie dla `SECRET_ENCRYPTION_KEY` oraz fallback do `OPENAI_API_KEY`
+  - Buforowanie `cachedKey` w pamięci procesu
+- Obsługa pełnego szyfrowania i deszyfrowania kluczy OpenAI
+- Mechanizm `npm run dev` w katalogu głównym do jednoczesnego uruchamiania frontend + backend
+
+### Changed
+
+- Integracja `openaiKeyManager.js` z usługami AI (GPT, embeddingi)
+- Rozdzielenie struktury dokumentacji backendowej (wszystkie pliki tematyczne osobno)
+- Opis obsługi klucza OpenAI uwzględnia teraz szyfrowanie, `scope`, rotację i fallback
+
+### Planned
+
+- Potwierdzenie adresu e-mail użytkownika (`emailVerified`) – logika backendowa
+- Zatwierdzanie rejestracji przez administratora (`approvedByAdmin`)
+- Dodanie endpointu do rotacji klucza OpenAI
+
+---
+
 ## [0.0.10] – 2025-04-13
 
 ### Added
