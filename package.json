@@ -1,6 +1,6 @@
 {
   "name": "ai-task-app-backend",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Backend for AI Task App with GPT-4 integration",
   "main": "server.js",
   "scripts": {

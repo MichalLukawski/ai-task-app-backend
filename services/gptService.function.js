@@ -1,10 +1,13 @@
 // services/gptService.function.js
 
 require('dotenv').config();
+const { DateTime } = require('luxon');
 const { getOpenAIKey } = require('./openaiKeyManager');
 const { OpenAI } = require('openai');
 
-const today = new Date().toISOString().split('T')[0];
+const today = DateTime.now().setZone('Europe/Warsaw').toISODate(); 
+
+
 
 /**
  * Generates a task structure from user description using GPT function calling

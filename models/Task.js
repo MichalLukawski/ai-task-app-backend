@@ -27,6 +27,9 @@ const taskSchema = new mongoose.Schema({
   summary: {
     type: String,
   },
+  notes: {
+    type: String,
+  },
   similarTasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }],
   embedding: [Number],
   status: {

@@ -14,7 +14,10 @@ dotenv.config();
 const app = express();
 
 //pozwala Reactowi (działającemu np. na porcie 3000) wysyłać żądania do API
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}));
 //umożliwia obsługę JSON-a w requestach (req.body)
 app.use(express.json());
 app.use('/api/tasks', taskRoutes);

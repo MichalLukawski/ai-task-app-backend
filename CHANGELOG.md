@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.0.12] – 2025-04-14
+
+### Dodano
+
+- Nowe pole `notes` w schemacie `Task` (typ `String`, opcjonalne).  
+  Przeznaczone do przechowywania wewnętrznych notatek użytkownika lub dodatkowych informacji kontekstowych dotyczących zadania.
+
+- Zainstalowano i zintegrowano bibliotekę [`luxon`](https://moment.github.io/luxon/) jako narzędzie do obsługi dat i stref czasowych.  
+  `luxon` jest wykorzystywany w pliku `gptService.function.js` do spójnego, lokalnego i strefowo świadomego przetwarzania dat, zwłaszcza przy tworzeniu zadań wspieranych przez AI i analizie terminów (`dueDate`).
+
+### Zmieniono
+
+- Uzupełniono konfigurację CORS w backendzie:
+
+  ```js
+  app.use(
+    cors({
+      origin: 'http://localhost:5173',
+      credentials: true,
+    })
+  );
+  ```
+
+---
+
 ## [0.0.11] – 2025-04-13
 
 ### Added
