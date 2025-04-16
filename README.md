@@ -1,21 +1,6 @@
-# 🧠 AI Task App – Backend README
+# 🧠 AI Task App
 
-Ten plik zawiera kompletną dokumentację backendu aplikacji AI Task App – inteligentnego systemu do zarządzania zadaniami technicznymi, wspieranego przez modele GPT-4o i embeddingi semantyczne. Backend odpowiada za rejestrację użytkowników, logowanie, obsługę zadań oraz integrację z usługami AI.
-
----
-
-## 📚 Zawartość
-
-- [Opis projektu](#opis-projektu)
-- [Technologie](#technologie)
-- [Struktura katalogów](#struktura-katalogów)
-- [Uruchomienie](#uruchomienie)
-- [Uwierzytelnianie](#uwierzytelnianie)
-- [API zadań](#api-zadań)
-- [Integracja AI](#integracja-ai)
-- [Szyfrowanie kluczy OpenAI](#szyfrowanie-kluczy-openai)
-- [Formatowanie kodu](#formatowanie-kodu)
-- [Powiązana dokumentacja](#powiązana-dokumentacja)
+AI Task App to aplikacja do zarządzania zadaniami, wspierana przez sztuczną inteligencję (GPT-4o). Umożliwia tworzenie zadań ręcznie lub automatycznie z pomocą AI, generowanie embeddingów, zamykanie zadań z automatycznym ocenianiem i podsumowaniem, a także odnajdywanie podobnych zadań w kontekście semantycznym.
 
 ---
 
@@ -61,96 +46,110 @@ backend/
 └── server.js           # Główna aplikacja Express
 ```
 
----
+## 🚀 Jak uruchomić projekt lokalnie
 
-## 🚀 Uruchomienie
+### 1. Klonowanie repozytorium:
 
-1. Utwórz plik `.env` (szczegóły: ../docs/backend/env.md)
-
-```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/ai-task-app
-JWT_SECRET=twoj_super_sekret
-SECRET_ENCRYPTION_KEY=64-znakowy-hex
-# OPENAI_API_KEY=sk-... (opcjonalny fallback)
+```bash
+git clone https://github.com/twoje-repo/ai-task-app.git
+cd ai-task-app
 ```
 
-2. Zainstaluj zależności
+### 2. Instalacja zależności:
 
 ```bash
 npm install
+
 ```
 
-3. Uruchom backend
+### 3. Pliki `.env`
+
+Utwórz `.env` w `backend/` z poniższymi zmiennymi:
+
+```
+PORT=5000
+MONGO_URI=<twoje_uri>
+JWT_SECRET=<tajny_klucz>
+OPENAI_API_KEY=<klucz_openai>
+SECRET_ENCRYPTION_KEY=<klucz_AES_256>
+```
+
+### 4. Uruchomienie projektu:
 
 ```bash
 npm run dev
 ```
 
----
-
-## 🔐 Uwierzytelnianie
-
-- Rejestracja: `POST /api/auth/register`
-- Logowanie: `POST /api/auth/login` → zwraca JWT
-- Token wymagany w: `/api/tasks`, `/api/system/...`
-- Nagłówek: `Authorization: Bearer <TOKEN>`
-- Walidacja tokena: middleware `auth.js`
+- Backend: http://localhost:5000
+- Frontend: http://localhost:5173
 
 ---
 
-## 🧾 API zadań
+## 🧠 Funkcje AI
 
-- Tworzenie:
-  - `POST /api/tasks` – ręczne
-  - `POST /api/tasks/ai-create` – przez GPT
-- Edycja: `PATCH /api/tasks/:id`
-- Zamykanie:
-  - `PATCH /api/tasks/:id/ai-close` – AI ocenia i wygładza `summary`
-  - `PATCH /api/tasks/:id/close` – kopiowanie `summary` z innego zadania
-- Wyszukiwanie: `GET /api/tasks` – wszystkie zadania użytkownika
+| Funkcja                | Opis                                                                            |
+| ---------------------- | ------------------------------------------------------------------------------- |
+| **createTaskWithAI**   | Tworzy strukturę zadania na podstawie opisu użytkownika                         |
+| **processTaskClosure** | Ocenia jakość `summary`, opcjonalnie poprawia                                   |
+| **embeddingService**   | Tworzy embedding i identyfikuje podobne zadania                                 |
+| **function_calling**   | Integracja z GPT-4o poprzez nazwane funkcje (`create_task`, `evaluate_summary`) |
 
 ---
 
-## 🧠 Integracja AI
+## 🔐 Autoryzacja
 
-- GPT-4o (`gptService.function.js`)
-  - `create_task` – wygenerowanie danych zadania
-  - `assess_summary` – ocena jakości opisu
-  - `improve_summary` – wygładzenie
-- AI zawsze odpowiada przez `tool_calls`
-- Embeddingi (`text-embedding-3-small`) generowane w `embeddingService.js`
-- `similarTasks` wybierane automatycznie (cosine similarity ≥ 0.75)
+- Rejestracja i logowanie z JWT (`authController.js`)
+- Middleware `auth.js` sprawdza token i przypisuje `req.user`
+- Obsługa ról (`role`) zaplanowana na kolejne wersje
 
 ---
 
-## 🔐 Szyfrowanie kluczy OpenAI
+## 📘 API (wybrane trasy)
 
-- Klucze mogą być:
-  - zapisane zaszyfrowane w MongoDB (`ApiKey`)
-  - fallback do `.env` (`OPENAI_API_KEY`)
-- Szyfrowanie: AES-256-GCM
-- Klucz szyfrujący: `SECRET_ENCRYPTION_KEY` (64-znakowy hex)
-- Endpoint: `POST /api/system/openai-key` (tylko dla admina)
-
----
-
-## 🎨 Formatowanie kodu
-
-Plik `prettier.config.js` zapewnia jednolity styl kodu.  
-Aby sformatować:
-
-```bash
-npm run format
-```
+| Metoda | Endpoint                  | Opis                          |
+| ------ | ------------------------- | ----------------------------- |
+| POST   | `/api/auth/register`      | Rejestracja użytkownika       |
+| POST   | `/api/auth/login`         | Logowanie i JWT               |
+| POST   | `/api/tasks`              | Tworzenie zadania             |
+| POST   | `/api/tasks/ai-create`    | Tworzenie z AI                |
+| PATCH  | `/api/tasks/:id/ai-close` | Zamykanie przez AI            |
+| PATCH  | `/api/tasks/:id/close`    | Kopiowanie `summary`          |
+| POST   | `/api/system/openai-key`  | Zapis klucza OpenAI (AES-256) |
 
 ---
 
-## 📄 Powiązana dokumentacja
+## 🧱 Backend – struktura folderów
 
-- `backend_overview.md` – szczegółowy opis backendu
-- `api_spec.md` – endpointy, metody, parametry
-- `controllers.md`, `validators.md`, `services.md`
-- `middleware.md`, `utils.md`
-- `ai_integration.md` – GPT + embeddingi
-- `b_env_FULL.md` – zmienne środowiskowe backendu
+| Folder         | Zawartość                                    |
+| -------------- | -------------------------------------------- |
+| `controllers/` | Logika wykonawcza dla tras                   |
+| `routes/`      | Deklaracja endpointów                        |
+| `services/`    | Interfejs AI, embeddingi, klucze             |
+| `models/`      | Mongoose schemas                             |
+| `middleware/`  | JWT, walidacja, błędy                        |
+| `validators/`  | Walidacja danych wejściowych                 |
+| `utils/`       | `sendSuccess`, `sendError`, `handleTryCatch` |
+
+---
+
+## 🧩 Dokumentacja
+
+- `docs/controllers.md`
+- `docs/routes.md`
+- `docs/services.md`
+- `docs/validators.md`
+- `docs/utils.md`
+- `docs/api_spec.md`
+- `docs/project_roadmap.md`
+- `docs/project_overview.md`
+- `docs/backend_overview.md`
+
+---
+
+## 📌 Status projektu
+
+- ✅ AI integracja (tworzenie, ocena, wygładzanie)
+- ✅ Rejestracja, logowanie, token JWT
+- ✅ Refaktoryzacja backendu
+- ✅ Edycja karty zadania (model `editedTask`)
+- 🔄 W trakcie: system ról, podgląd podobnych zadań

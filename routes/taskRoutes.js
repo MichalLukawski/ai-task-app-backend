@@ -10,19 +10,45 @@ const {
   validateUpdateTaskInput,
   validateCreateTaskWithAI,
 } = require('../validators/taskValidator');
+const { handleTryCatch } = require('../utils/responseHandler');
 
-//Wszystkie trasy wymagają zalogowania (middleware auth)
-router.post('/', authMiddleware, validateTaskInput, validate, taskController.createTask);
-router.get('/', authMiddleware, taskController.getTasks);
-router.patch('/:id', authMiddleware, validateUpdateTaskInput, validate, taskController.updateTask);
-router.patch('/:id/close', authMiddleware, taskController.closeTask);
+// Wszystkie trasy wymagają zalogowania (middleware auth)
+router.post(
+  '/',
+  authMiddleware,
+  validateTaskInput,
+  validate,
+  handleTryCatch(taskController.createTask)
+);
+
+router.get('/', authMiddleware, handleTryCatch(taskController.getTasks));
+
+router.patch(
+  '/:id',
+  authMiddleware,
+  validateUpdateTaskInput,
+  validate,
+  handleTryCatch(taskController.updateTask)
+);
+
+router.patch(
+  '/:id/close',
+  authMiddleware,
+  handleTryCatch(taskController.closeTask)
+);
+
 router.post(
   '/ai-create',
   authMiddleware,
   validateCreateTaskWithAI,
   validate,
-  taskController.createTaskWithAI
+  handleTryCatch(taskController.createTaskWithAI)
 );
-router.patch('/:id/ai-close', authMiddleware, taskController.closeTaskWithAI);
+
+router.patch(
+  '/:id/ai-close',
+  authMiddleware,
+  handleTryCatch(taskController.closeTaskWithAI)
+);
 
 module.exports = router;

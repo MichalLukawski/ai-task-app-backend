@@ -18,7 +18,25 @@ const sendError = (res, message = 'Something went wrong', status = 500, code = n
   });
 };
 
+// Wrapper for try/catch handling in async route handlers
+const handleTryCatch = (asyncFn) => {
+  if (typeof asyncFn !== 'function') {
+    console.error('❌ handleTryCatch error: passed argument is not a function:', asyncFn);
+    throw new TypeError('handleTryCatch expects a function');
+  }
+
+  return async (req, res, next) => {
+    try {
+      await asyncFn(req, res, next);
+    } catch (err) {
+      console.error('❌ Error in route handler:', err);
+      return sendError(res, err.message || 'Unexpected error');
+    }
+  };
+};
+
 module.exports = {
   sendSuccess,
   sendError,
+  handleTryCatch,
 };

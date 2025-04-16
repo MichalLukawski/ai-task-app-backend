@@ -1,5 +1,36 @@
 # Changelog
 
+# 📦 CHANGELOG – AI Task App
+
+Chronologiczna lista zmian w projekcie AI Task App. Każda wersja zawiera listę modyfikacji, nowych funkcji oraz refaktorów – zarówno w backendzie, jak i frontendzie.
+
+---
+
+## [0.0.13] – 2025-04-15
+
+### 🆕 Nowe funkcje backend
+
+- Dodano pełne wsparcie dla kontrolera `systemController.js` oraz trasy `POST /api/system/openai-key`
+- Zaimplementowano `handleTryCatch(fn)` w `utils/responseHandler.js` i zastosowano we wszystkich trasach
+- Utworzono `authValidator.js` (walidacja `register`, `login`)
+- Usunięto plik `gptService.function.js` – zastąpiono go zunifikowanym `gptService.js`
+- Wszystkie kontrolery korzystają teraz z `sendSuccess`/`sendError` i są wolne od lokalnych `try/catch`
+
+### 🔧 Refaktoryzacja backend
+
+- Spójna struktura katalogów: `controllers`, `routes`, `services`, `validators`, `utils`
+- Ustandaryzowanie odpowiedzi API (`status`, `message`, `data`)
+- Middleware `auth.js` rozszerzony o `req.user.email` i `req.user.role`
+- Rozszerzenie `taskValidator.js` o walidatory dla `closeTaskWithAI`, `closeTaskFromOther`
+
+### ⚙️ AI i embeddingi
+
+- Poprawiono obsługę `getSummaryAssessment()` i `improveSummary()` w `gptService.js`
+- Dodano obsługę parametru `force = true` przy zamykaniu zadania z AI
+- Embeddingi generowane i przypisywane w `generateAndAttachEmbedding(taskId)` wraz z `similarTasks`
+
+---
+
 ## [0.0.12] – 2025-04-14
 
 ### Dodano
@@ -8,7 +39,7 @@
   Przeznaczone do przechowywania wewnętrznych notatek użytkownika lub dodatkowych informacji kontekstowych dotyczących zadania.
 
 - Zainstalowano i zintegrowano bibliotekę [`luxon`](https://moment.github.io/luxon/) jako narzędzie do obsługi dat i stref czasowych.  
-  `luxon` jest wykorzystywany w pliku `gptService.function.js` do spójnego, lokalnego i strefowo świadomego przetwarzania dat, zwłaszcza przy tworzeniu zadań wspieranych przez AI i analizie terminów (`dueDate`).
+  `luxon` jest wykorzystywany w pliku `gptService.js` do spójnego, lokalnego i strefowo świadomego przetwarzania dat, zwłaszcza przy tworzeniu zadań wspieranych przez AI i analizie terminów (`dueDate`).
 
 ### Zmieniono
 
@@ -115,7 +146,7 @@
 
 ### Added
 
-- Wdrożenie GPT function calling (`gptService.function.js`) z pełną strukturą `title`, `description`, `dueDate`, `difficulty`
+- Wdrożenie GPT function calling (`gptService.js`) z pełną strukturą `title`, `description`, `dueDate`, `difficulty`
 - Moduł `embeddingService.js`:
   - Generowanie embeddingów (`text-embedding-3-small`)
   - Porównywanie embeddingów z zamkniętymi zadaniami (cosine similarity)
@@ -130,9 +161,9 @@
 ### Changed
 
 - Usunięto fallback i logger (`logGPTFallback`) z `gptService.js`
-- `createWithAI` korzysta z `gptService.function.js` i nie zapisuje już `notes`
+- `createWithAI` korzysta z `gptService.js` i nie zapisuje już `notes`
 - `taskModel.js` – usunięto `tags`, `priority`, `source`, dodano `difficulty`
-- Rozdzielono `gptService.js` na `gptService.function.js` (function calling)
+- Rozdzielono `gptService.js` na `gptService.js` (function calling)
 - Aktualizacja `db_schema.md` zgodnie z nowym modelem `Task`
 - Refaktoryzacja dokumentacji do aktualnego stanu projektu
 

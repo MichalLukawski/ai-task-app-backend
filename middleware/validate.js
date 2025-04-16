@@ -9,10 +9,11 @@ module.exports = (req, res, next) => {
   if (!errors.isEmpty()) {
     const messages = errors
       .array()
-      .map((e) => e.msg)
+      .map((err) => err.msg)
       .join('; ');
+
     return sendError(res, messages, 400, 'VALIDATION_ERROR');
   }
 
-  next();
+  return next();
 };
