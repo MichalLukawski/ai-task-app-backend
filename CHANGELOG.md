@@ -1,8 +1,22 @@
-# Changelog
+# 📦 CHANGELOG – AI Task App (Backend)
 
-# 📦 CHANGELOG – AI Task App
+Poniżej przedstawiono szczegółowy changelog dla warstwy backendowej projektu AI Task App. Opisano zmiany dotyczące modeli danych, tras API, logiki serwera, integracji z OpenAI oraz refaktorów organizacyjnych. Zmiany frontendowe zostały pominięte.
 
-Chronologiczna lista zmian w projekcie AI Task App. Każda wersja zawiera listę modyfikacji, nowych funkcji oraz refaktorów – zarówno w backendzie, jak i frontendzie.
+---
+
+## [0.0.14] – 2025-04-17
+
+### 🔧 Backend – synchronizacja i poprawki API
+
+- Rozszerzenie kontrolera zadań o pełną synchronizację danych:
+  - Po zapisaniu pola (`PATCH`) frontend od razu wykonuje `GET /api/tasks/:id`
+  - Wymaga pełnej spójności danych – backend aktualizuje i zwraca najnowszy stan zadania
+- Poprawa walidacji w `taskValidator.js`:
+  - Obsługa wymaganych pól w `PATCH`, w tym walidacja pustych `title`
+  - Dostosowanie walidatorów do dynamicznych zapisów
+- Wdrożenie ujednoliconych kodów błędów w `sendError(...)`:
+  - `MISSING_TITLE_FROM_GPT`
+  - `VALIDATION_ERROR` przy pustym `title`, `summary` lub `difficulty`
 
 ---
 
