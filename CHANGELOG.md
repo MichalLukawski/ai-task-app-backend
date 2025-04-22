@@ -4,6 +4,36 @@ Poniżej przedstawiono szczegółowy changelog dla warstwy backendowej projektu 
 
 ---
 
+## [0.0.15] – 2025-04-18
+
+### ✨ Backend – nowe funkcjonalności i zmiany logiczne
+
+- Dodano pełną obsługę ręcznego zamykania zadania:
+  - Endpoint `PATCH /api/tasks/:id/close`
+  - Walidacja `summary` (wymagane, min. 10 znaków)
+  - Funkcja `closeTaskManually()` z automatycznym ustawieniem `closedAt`
+- Dodano kopiowanie `summary` z innego zadania:
+  - Endpoint `PATCH /api/tasks/:id/close-copy`
+  - Walidacja `sourceTaskId` (wymagany, musi zawierać `summary`)
+- Nowa trasa `DELETE /api/tasks/:id`:
+  - Trwałe usuwanie zadania z bazy
+  - Wymagana autoryzacja i właścicielstwo zadania (`task.ownerId`)
+- Rozszerzono `getTaskById()`:
+  - `.populate('similarTasks', 'title description summary closedAt createdAt')`
+  - Dane podobnych zadań dostępne bez dodatkowego zapytania
+- Rozbudowa `aiSummaryService.js`:
+  - Wyjątek `AI_REJECTED` rzucany jeśli podsumowanie zbyt słabe (gdy `force = false`)
+  - Umożliwienie kontynuacji zapisu przez modal w UI
+- Uzupełniono walidatory:
+  - `validateCloseTaskManually`
+  - `validateCloseTaskFromOther`
+- Aktualizacja dokumentacji backendu:
+  - `controllers.md`, `routes.md`, `api_spec.md`, `db_schema.md`, `validators.md`, `services.md`, `task_flow.md`, `project_roadmap.md`
+
+---
+
+Poniżej przedstawiono szczegółowy changelog dla warstwy backendowej projektu AI Task App. Opisano zmiany dotyczące modeli danych, tras API, logiki serwera, integracji z OpenAI oraz refaktorów organizacyjnych. Zmiany frontendowe zostały pominięte.
+
 ## [0.0.14] – 2025-04-17
 
 ### 🔧 Backend – synchronizacja i poprawki API

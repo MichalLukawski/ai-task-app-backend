@@ -115,6 +115,9 @@ npm run dev
 | PATCH  | `/api/tasks/:id/ai-close` | Zamykanie przez AI            |
 | PATCH  | `/api/tasks/:id/close`    | Kopiowanie `summary`          |
 | POST   | `/api/system/openai-key`  | Zapis klucza OpenAI (AES-256) |
+| PATCH  | /api/tasks/:id/close-copy | Kopiowanie `summary` z innego |
+| DELETE | /api/tasks/:id            | Trwałe usunięcie zadania      |
+| GET    | /api/tasks/:id            | Zwraca dane + podobne zadania |
 
 ---
 

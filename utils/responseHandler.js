@@ -30,7 +30,7 @@ const handleTryCatch = (asyncFn) => {
       await asyncFn(req, res, next);
     } catch (err) {
       console.error('❌ Error in route handler:', err);
-      return sendError(res, err.message || 'Unexpected error');
+      return sendError(res, err.message || 'Unexpected error', 500, err.code || null);
     }
   };
 };

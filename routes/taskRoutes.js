@@ -23,6 +23,8 @@ router.post(
 
 router.get('/', authMiddleware, handleTryCatch(taskController.getTasks));
 
+router.get('/:id', authMiddleware, handleTryCatch(taskController.getTaskById));
+
 router.patch(
   '/:id',
   authMiddleware,
@@ -31,11 +33,8 @@ router.patch(
   handleTryCatch(taskController.updateTask)
 );
 
-router.patch(
-  '/:id/close',
-  authMiddleware,
-  handleTryCatch(taskController.closeTask)
-);
+router.patch('/:id/close', authMiddleware, handleTryCatch(taskController.closeTaskManually));
+router.patch('/:id/close-copy', authMiddleware, handleTryCatch(taskController.closeTaskFromSource));
 
 router.post(
   '/ai-create',
@@ -45,10 +44,8 @@ router.post(
   handleTryCatch(taskController.createTaskWithAI)
 );
 
-router.patch(
-  '/:id/ai-close',
-  authMiddleware,
-  handleTryCatch(taskController.closeTaskWithAI)
-);
+router.patch('/:id/ai-close', authMiddleware, handleTryCatch(taskController.closeTaskWithAI));
+router.delete('/:id', authMiddleware, handleTryCatch(taskController.deleteTask));
+
 
 module.exports = router;

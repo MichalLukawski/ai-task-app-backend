@@ -22,7 +22,7 @@ const register = async (req, res) => {
 
 // Logowanie użytkownika i generowanie tokena JWT
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe = false } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -34,7 +34,8 @@ const login = async (req, res) => {
     return sendError(res, 'Invalid email or password', 401, 'INVALID_CREDENTIALS');
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+  const expiresIn = rememberMe ? '7d' : '1d';
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn });
 
   return sendSuccess(res, 'Login successful', { token });
 };

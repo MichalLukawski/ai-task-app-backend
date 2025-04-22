@@ -18,9 +18,17 @@ async function getTaskStructureFromAI(description) {
   const messages = [
     {
       role: 'system',
-      content: `Today is ${today}. Based on the user's description, generate the data required to create a task.
-The description should be as specific and technically detailed as possible.
-Avoid general or vague language. Always respond in the same language as the user's input.`,
+      content: `Today is ${today}. Your task is to extract structured task information strictly based on the content provided by the user.
+
+Do not add, guess, or infer any information that is not explicitly stated by the user.
+
+If the description is incomplete or unclear, you must still generate a title, description, and difficulty using only the available data, without adding anything on your own.
+
+You may slightly rephrase or clean up the text to improve readability, but preserve the full meaning and technical accuracy.
+
+Respond in the same language as the user.`
+
+      
     },
     {
       role: 'user',
@@ -73,18 +81,18 @@ Avoid general or vague language. Always respond in the same language as the user
 
   const args = result.choices[0].message.tool_calls?.[0]?.function?.arguments;
 
-if (!args) {
-  throw new Error('Missing or invalid response from GPT function calling');
-}
+  if (!args) {
+    throw new Error('Missing or invalid response from GPT function calling');
+  }
 
-const parsed = JSON.parse(args);
+  const parsed = JSON.parse(args);
 
-// Opcjonalna walidacja:
-if (!parsed.title?.trim()) {
-  throw new Error('GPT returned empty or missing task title');
-}
+  // Opcjonalna walidacja:
+  if (!parsed.title?.trim()) {
+    throw new Error('GPT returned empty or missing task title');
+  }
 
-return parsed;
+  return parsed;
 }
 
 async function getSummaryAssessment(taskDescription, userSummary) {

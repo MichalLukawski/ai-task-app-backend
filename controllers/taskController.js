@@ -45,6 +45,19 @@ const getTasks = async (req, res) => {
   return sendSuccess(res, 'Tasks retrieved successfully', tasks);
 };
 
+const getTaskById = async (req, res) => {
+  const { id } = req.params;
+  const task = await Task.findOne({ _id: id, ownerId: req.user.id })
+    .populate({
+   path: 'similarTasks',
+  select: '_id title description summary closedAt createdAt'
+    });
+   if (!task) return sendError(res, 'Task not found', 404);
+
+  return sendSuccess(res, 'Task retrieved successfully', task);
+};
+
+
 const updateTask = async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
@@ -65,10 +78,10 @@ const updateTask = async (req, res) => {
   return sendSuccess(res, 'Task updated successfully', updatedTask);
 };
 
-
 const closeTaskWithAI = async (req, res) => {
   const task = await Task.findById(req.params.id);
-  if (!task || task.ownerId.toString() !== req.user.id) {
+  const isOwner = task?.ownerId?.toString() === req.user?.id?.toString();
+  if (!task || !isOwner) {
     return sendError(res, 'Task not found or unauthorized access.', 404);
   }
 
@@ -78,7 +91,7 @@ const closeTaskWithAI = async (req, res) => {
     return sendError(res, 'Summary is required when using AI.', 400);
   }
 
-  const processedSummary = await processTaskClosure({
+   const processedSummary = await processTaskClosure({
     task,
     userSummary: summary,
     force,
@@ -89,23 +102,46 @@ const closeTaskWithAI = async (req, res) => {
   task.summary = processedSummary;
 
   await task.save();
+
   return sendSuccess(res, 'Task closed successfully', task);
 };
 
-const closeTask = async (req, res) => {
-  const { sourceTaskId } = req.body;
+const closeTaskManually = async (req, res) => {
   const task = await Task.findById(req.params.id);
-
-  if (!task || task.ownerId.toString() !== req.user.id) {
+  const isOwner = task?.ownerId?.toString() === req.user?.id?.toString();
+  if (!task || !isOwner) {
     return sendError(res, 'Task not found or unauthorized access.', 404);
   }
 
+  const { summary } = req.body;
+
+  if (!summary || summary.trim().length < 10) {
+    return sendError(res, 'Summary is required and must be at least 10 characters.', 400);
+  }
+
+  task.status = 'closed';
+  task.closedAt = new Date();
+  task.summary = summary;
+
+  await task.save();
+  return sendSuccess(res, 'Task closed manually.', task);
+};
+
+const closeTaskFromSource = async (req, res) => {
+  const task = await Task.findById(req.params.id);
+  const isOwner = task?.ownerId?.toString() === req.user?.id?.toString();
+  if (!task || !isOwner) {
+    return sendError(res, 'Task not found or unauthorized access.', 404);
+  }
+
+  const { sourceTaskId } = req.body;
+
   if (!sourceTaskId) {
-    return sendError(res, 'Only sourceTaskId is allowed in this endpoint.', 400);
+    return sendError(res, 'sourceTaskId is required.', 400);
   }
 
   const sourceTask = await Task.findById(sourceTaskId);
-  if (!sourceTask || !sourceTask.summary) {
+  if (!sourceTask?.summary) {
     return sendError(res, 'Source task not found or has no summary.', 400);
   }
 
@@ -114,14 +150,28 @@ const closeTask = async (req, res) => {
   task.summary = sourceTask.summary;
 
   await task.save();
-  return sendSuccess(res, 'Task closed successfully (copied summary)', task);
+  return sendSuccess(res, 'Task closed from source summary.', task);
 };
+
+const deleteTask = async (req, res) => {
+  const task = await Task.findOne({ _id: req.params.id, ownerId: req.user.id });
+  if (!task) {
+    return sendError(res, 'Task not found or unauthorized access.', 404);
+  }
+
+  await Task.deleteOne({ _id: task._id });
+  return sendSuccess(res, 'Task permanently deleted.');
+};
+
 
 module.exports = {
   createTask,
   createTaskWithAI,
   getTasks,
+  getTaskById,
   updateTask,
   closeTaskWithAI,
-  closeTask,
+  closeTaskManually,
+  closeTaskFromSource,
+  deleteTask
 };
